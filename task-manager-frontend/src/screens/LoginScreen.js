@@ -9,6 +9,7 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { colors } = useTheme();
 
   const handleLogin = async () => {
@@ -17,6 +18,9 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
+    setLoading(true);
+    setError(null);
+
     try {
       await login(email, password);
       navigation.navigate("Home");
@@ -24,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
       console.error("Login failed:", error);
       Alert.alert("Login Failed", error.response?.data?.message || "Something went wrong.");
     } finally {
-      setError(null);
+      setLoading(false);
     }
   };
 
@@ -50,11 +54,18 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
       />
       {error && <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>}
-      
-      <Button mode="contained" onPress={handleLogin} style={styles.button}>
-        Login
+
+      {/* Disable button and change text while loading */}
+      <Button 
+        mode="contained" 
+        onPress={handleLogin} 
+        style={styles.button} 
+        disabled={loading} // Disable button
+      >
+        {loading ? "Loading..." : "Login"} 
       </Button>
-      <Button onPress={() => navigation.navigate("Signup")}>
+
+      <Button onPress={() => navigation.navigate("Signup")} disabled={loading}>
         Create an Account
       </Button>
     </View>

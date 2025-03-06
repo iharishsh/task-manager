@@ -10,6 +10,7 @@ const SignupScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { signup } = useContext(AuthContext);
 
   const handleSignup = async () => {
@@ -17,6 +18,9 @@ const SignupScreen = ({ navigation }) => {
       setError("Name, Email and Password are required");
       return;
     }
+
+    setLoading(true);
+    setError(null);
 
     try {
       await signup(name, email, password);
@@ -26,7 +30,7 @@ const SignupScreen = ({ navigation }) => {
       console.error("Signup error:", error.response?.data || error);
       Alert.alert("Signup Failed", error.response?.data?.message || "Something went wrong.");
     } finally {
-      setError(null);
+      setLoading(false);
     }
   };
   
@@ -63,10 +67,15 @@ const SignupScreen = ({ navigation }) => {
       />
       {error && <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>}
 
-      <Button mode="contained" onPress={handleSignup}>
-        Sign Up
+      <Button 
+        mode="contained" 
+        onPress={handleSignup} 
+        disabled={loading}
+      >
+        {loading ? "Loading..." : "Sign Up"} 
       </Button>
-      <Button onPress={() => navigation.navigate("Login")}>
+
+      <Button onPress={() => navigation.navigate("Login")} disabled={loading}>
         Have an Account? Login
       </Button>
     </View>

@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 20,
     position: "absolute",
-    top: 35,
+    top: 0,
     elevation: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
